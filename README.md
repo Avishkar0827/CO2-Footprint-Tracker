@@ -1,5 +1,5 @@
-#Carbon Footprint Calculator
-##Overview
+# Carbon Footprint Calculator
+## Overview
 This project is a Carbon Footprint Calculator web application designed to help users calculate and track their carbon footprint. The application offers the following features:
 
 Carbon Footprint Calculation: Users can calculate their carbon footprint based on various activities and lifestyle choices.
@@ -10,7 +10,7 @@ CRUD Operations: Users can create, read, update, and delete their carbon footpri
 
 Authentication: Secure user authentication is implemented using JWT tokens for login and logout functionality.
 
-##Technologies Used
+## Technologies Used
 Frontend & Backend Framework: Next.js (React-based full-stack framework)
 
 Styling: Tailwind CSS
@@ -23,7 +23,7 @@ Database: MongoDB
 
 Hosting/Deployment: Vercel 
 
-##Screenshots
+## Screenshots
 
 ![image](https://github.com/user-attachments/assets/49794c99-d577-4464-9911-008a90873296)
 
