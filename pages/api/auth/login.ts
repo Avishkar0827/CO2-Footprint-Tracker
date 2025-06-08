@@ -1,4 +1,3 @@
-// pages/api/auth/login.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/dbConnect';
 import User, { IUser } from '../../../models/User';
@@ -23,12 +22,15 @@ export default async function handler(
 
     const user = await User.findOne({ email }).select('+password') as IUser | null;
     if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+      return res.status(404).json({ 
+        success: false, 
+        message: 'No account found with this email. Please sign up first!' 
+      });
     }
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+      return res.status(400).json({ success: false, message: 'Invalid password' });
     }
 
     const token = generateToken(user._id.toString());

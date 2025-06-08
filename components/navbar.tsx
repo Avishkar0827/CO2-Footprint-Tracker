@@ -102,10 +102,7 @@ export default function Navbar() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end" forceMount>
-                      <DropdownMenuItem className="flex items-center">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                      </DropdownMenuItem>
+                     
                       <DropdownMenuItem 
                         onClick={logout}
                         className="text-red-600 focus:text-red-600"

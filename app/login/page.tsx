@@ -37,12 +37,25 @@ export default function Login() {
       
       if (result.success) {
         toast.success('Logged in successfully!')
-        router.push('/')
+        router.push('/dashboard')
       } else {
-        toast.error(result.message || 'Failed to login')
+        if (result.message?.includes('No account found')) {
+          toast.error(result.message, {
+            duration: 4000,
+            position: 'top-center',
+            style: {
+              backgroundColor: '#fef2f2',
+              color: '#b91c1c',
+              border: '1px solid #fecaca'
+            }
+          })
+          setTimeout(() => router.push(`/signup?email=${encodeURIComponent(formData.email)}`), 2000)
+        } else {
+          toast.error(result.message || 'Invalid credentials. Please try again.')
+        }
       }
-    } catch (error) {
-      toast.error('An unexpected error occurred')
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -70,6 +83,7 @@ export default function Login() {
                   required 
                   value={formData.email}
                   onChange={handleChange}
+                  placeholder="Enter your email"
                 />
               </div>
               <div className="space-y-2">
@@ -80,6 +94,7 @@ export default function Login() {
                   required 
                   value={formData.password}
                   onChange={handleChange}
+                  placeholder="Enter your password"
                 />
               </div>
               <Button 
@@ -91,8 +106,11 @@ export default function Login() {
               </Button>
             </form>
             <div className="mt-4 text-center text-sm">
-              <Link href="/signup" className="text-green-600 hover:text-green-700">
-                Don&apos;t have an account? Sign up
+              <Link 
+                href={`/signup${formData.email ? `?email=${encodeURIComponent(formData.email)}` : ''}`}
+                className="text-green-600 hover:text-green-700 font-medium"
+              >
+                Don't have an account? Sign up
               </Link>
             </div>
           </CardContent>

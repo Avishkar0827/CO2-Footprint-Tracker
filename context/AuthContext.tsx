@@ -12,7 +12,12 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<any>;
+  login: (email: string, password: string) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: User;
+    token?: string;
+  }>;
   signup: (name: string, email: string, password: string, confirmPassword: string) => Promise<any>;
   logout: () => Promise<void>;
 }
@@ -84,15 +89,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
 
-      if (response.ok) {
-        storeAuthData(data.token, data.data);
-        setUser(data.data);
-        router.push('/dashboard');
+      if (!response.ok) {
+        if (response.status === 404 || data.message?.toLowerCase().includes('user not found')) {
+          return {
+            success: false,
+            message: 'No account found. Please sign up first!',
+          };
+        }
+        return {
+          success: false,
+          message: data.message || 'Login failed',
+        };
       }
-      return data;
-    } catch (error) {
+
+      storeAuthData(data.token, data.data);
+      setUser(data.data);
+      return { success: true, data: data.data, token: data.token };
+    } catch (error: any) {
       console.error('Login error:', error);
-      return { success: false, message: 'Login failed' };
+      return {
+        success: false,
+        message: error.message || 'Login failed',
+      };
     }
   };
 
@@ -109,7 +127,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         storeAuthData(data.token, data.data);
         setUser(data.data);
-        router.push('/dashboard');
       }
       return data;
     } catch (error) {
@@ -118,22 +135,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
- const logout = async () => {
-  try {
-    await fetch('/api/auth/logout', {
-      method: 'POST', // Changed from default GET to POST
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include' // Needed if using cookies
-    });
-    clearAuthData();
-    setUser(null);
-    router.push('/login');
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
-};
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
+      clearAuthData();
+      setUser(null);
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const value = {
     user,
