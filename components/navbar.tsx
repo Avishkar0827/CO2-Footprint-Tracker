@@ -178,10 +178,7 @@ export default function Navbar() {
                     <span className="text-lg font-medium">{user.name}</span>
                   </div>
                   <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="outline" className="w-full text-lg h-12">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Button>
+                    
                   </Link>
                   <Button 
                     onClick={() => {
