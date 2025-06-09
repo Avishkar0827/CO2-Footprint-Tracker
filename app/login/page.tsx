@@ -16,6 +16,10 @@ export default function Login() {
     email: '',
     password: ''
   })
+  const [errors, setErrors] = useState({
+    email: '',
+    password: ''
+  })
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { login } = useAuth()
@@ -26,10 +30,49 @@ export default function Login() {
       ...prev,
       [id]: value
     }))
+    // Clear error when user types
+    if (errors[id as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [id]: ''
+      }))
+    }
+  }
+
+  const validateForm = () => {
+    let valid = true
+    const newErrors = {
+      email: '',
+      password: ''
+    }
+
+    if (!formData.email) {
+      newErrors.email = 'Email is required'
+      valid = false
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
+      valid = false
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required'
+      valid = false
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
+      valid = false
+    }
+
+    setErrors(newErrors)
+    return valid
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -50,6 +93,11 @@ export default function Login() {
             }
           })
           setTimeout(() => router.push(`/signup?email=${encodeURIComponent(formData.email)}`), 2000)
+        } else if (result.message?.includes('Invalid password')) {
+          setErrors(prev => ({
+            ...prev,
+            password: 'Incorrect password. Please try again.'
+          }))
         } else {
           toast.error(result.message || 'Invalid credentials. Please try again.')
         }
@@ -84,7 +132,11 @@ export default function Login() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  className={errors.email ? 'border-red-500' : ''}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -95,7 +147,11 @@ export default function Login() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
+                  className={errors.password ? 'border-red-500' : ''}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
               <Button 
                 className="w-full bg-green-600 hover:bg-green-700"
