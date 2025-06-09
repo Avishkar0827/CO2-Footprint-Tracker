@@ -9,6 +9,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
+import { toast } from "react-hot-toast"
 
 export default function SignUp() {
   const [name, setName] = useState("")
@@ -33,17 +34,21 @@ export default function SignUp() {
       return
     }
 
-    // Call signup API
-    const response = await signup(name, email, password, confirmPassword)
+    try {
+      const response = await signup(name, email, password, confirmPassword)
 
-    if (response.success) {
-      // Redirect to home page if signup is successful
-      router.push("/") // Redirect to home page
-    } else {
-      setError(response.message || "Signup failed")
+      if (response.success) {
+        toast.success('Registration successful! Please login.')
+        // Redirect to login page with email prefilled
+        router.push(`/login?email=${encodeURIComponent(email)}`)
+      } else {
+        setError(response.message || "Signup failed")
+      }
+    } catch (error: any) {
+      setError(error.message || "Signup failed")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (

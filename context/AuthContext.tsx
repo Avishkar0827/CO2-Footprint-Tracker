@@ -124,14 +124,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
 
-      if (response.ok) {
-        storeAuthData(data.token, data.data);
-        setUser(data.data);
+      if (!response.ok) {
+        return {
+          success: false,
+          message: data.message || 'Signup failed'
+        };
       }
-      return data;
-    } catch (error) {
+
+      // Return success without storing auth data or setting user
+      return {
+        success: true,
+        message: data.message || 'Registration successful! Please login.',
+        data: data.data
+      };
+    } catch (error: any) {
       console.error('Signup error:', error);
-      return { success: false, message: 'Signup failed' };
+      return {
+        success: false,
+        message: error.message || 'Signup failed'
+      };
     }
   };
 

@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/dbConnect';
 import User from '../../../models/User';
-import { generateToken, setTokenCookie } from '../../../lib/auth';
 
 interface SignupRequestBody {
   name: string;
@@ -57,14 +56,9 @@ export default async function handler(
       password,
     });
 
-    // Generate token
-    const token = generateToken(user._id.toString());
-
-    // Set cookie
-    setTokenCookie(res, token);
-
     return res.status(201).json({
       success: true,
+      message: 'Registration successful! Please login.',
       data: {
         _id: user._id,
         name: user.name,

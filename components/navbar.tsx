@@ -4,7 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { LeafyGreen, Menu, X, LogOut, User } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/context/AuthContext"
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 interface NavItem {
   href: string
@@ -26,12 +26,12 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { user, loading, logout } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
 
   // Base nav items that are always visible
   const baseNavItems: NavItem[] = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    // Add Calculator here so it's always visible
     { href: "/calculator", label: "Calculator", protected: true }
   ]
 
@@ -46,9 +46,28 @@ export default function Navbar() {
     ...(user ? authNavItems : [])
   ]
 
+  useEffect(() => {
+    // Check protected routes on route change
+    if (pathname === '/calculator' && !user) {
+      router.replace('/login')
+    }
+  }, [pathname, user, router])
+
+  const handleLogout = async () => {
+    await logout()
+    // Clear session and redirect to home
+    if (pathname === '/calculator' || pathname === '/dashboard') {
+      router.replace('/')
+    } else {
+      router.refresh()
+    }
+  }
+
   const handleProtectedNavigation = (href: string, protectedRoute: boolean = false) => {
     if (protectedRoute && !user) {
-      router.push('/login')
+      // Store intended path for redirect after login
+      sessionStorage.setItem('redirectPath', href)
+      router.replace('/login')
       return
     }
     router.push(href)
@@ -102,9 +121,8 @@ export default function Navbar() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end" forceMount>
-                     
                       <DropdownMenuItem 
-                        onClick={logout}
+                        onClick={handleLogout}
                         className="text-red-600 focus:text-red-600"
                       >
                         <LogOut className="mr-2 h-4 w-4" />
@@ -177,12 +195,9 @@ export default function Navbar() {
                     </Avatar>
                     <span className="text-lg font-medium">{user.name}</span>
                   </div>
-                  <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
-                    
-                  </Link>
                   <Button 
                     onClick={() => {
-                      logout()
+                      handleLogout()
                       setIsMenuOpen(false)
                     }}
                     variant="destructive"

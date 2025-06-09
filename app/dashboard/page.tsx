@@ -254,55 +254,55 @@ export default function Dashboard() {
 
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Monthly Emissions Trend */}
-          <Card className="border-green-200 bg-white/70 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-gray-900">Emissions History</CardTitle>
-              <CardDescription>Your CO2 emissions over time</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {calculations.length > 0 ? (
-                <div className="space-y-4">
-                  {monthlyEmissions.map((month, index) => (
-                    <div key={calculations[index]._id} className="space-y-2 group relative">
-                      <div className="flex justify-between text-sm">
-                        <span className="font-medium text-gray-700">{month.month}</span>
-                        <span className="text-gray-600">{month.emissions.toFixed(1)} kg</span>
-                      </div>
-                      <div className="flex space-x-2">
-                        <div className="flex-1">
-                          <Progress value={month.percentage} className="h-2" />
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="absolute -right-2 -top-2 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700"
-                        onClick={() => handleDeleteCalculation(calculations[index]._id)}
-                        disabled={isDeleting === calculations[index]._id}
-                      >
-                        {isDeleting === calculations[index]._id ? (
-                          <span className="animate-pulse">Deleting...</span>
-                        ) : (
-                          <Trash2 className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No calculation data available yet. <br />
-                  <Button 
-                    onClick={() => router.push('/calculator')}
-                    className="mt-2"
-                  >
-                    Create your first calculation
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+         {/* Monthly Emissions Trend */}
+<Card className="border-green-200 bg-white/70 backdrop-blur-sm">
+  <CardHeader>
+    <CardTitle className="text-gray-900">Emissions History</CardTitle>
+    <CardDescription>Your CO2 emissions over time</CardDescription>
+  </CardHeader>
+  <CardContent>
+    {calculations.length > 0 ? (
+      <div className="space-y-4">
+        {monthlyEmissions.map((month, index) => (
+          <div key={calculations[index]._id} className="space-y-2 relative">
+            <div className="flex justify-between text-sm">
+              <span className="font-medium text-gray-700">{month.month}</span>
+              <span className="text-gray-600">{month.emissions.toFixed(1)} kg</span>
+            </div>
+            <div className="flex space-x-2 items-center">
+              <div className="flex-1">
+                <Progress value={month.percentage} className="h-2" />
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-500 hover:text-red-700 ml-2"
+                onClick={() => handleDeleteCalculation(calculations[index]._id)}
+                disabled={isDeleting === calculations[index]._id}
+              >
+                {isDeleting === calculations[index]._id ? (
+                  <span className="animate-pulse">Deleting...</span>
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-8 text-gray-500">
+        No calculation data available yet. <br />
+        <Button 
+          onClick={() => router.push('/calculator')}
+          className="mt-2"
+        >
+          Create your first calculation
+        </Button>
+      </div>
+    )}
+  </CardContent>
+</Card>
 
           {/* Emissions by Category */}
           <Card className="border-green-200 bg-white/70 backdrop-blur-sm">
