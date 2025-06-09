@@ -1,4 +1,5 @@
-# Carbon Footprint Calculator
+# Carbon Footprint Calculator-CO2 Ninja 
+
 ## Overview
 This project is a Carbon Footprint Calculator web application designed to help users calculate and track their carbon footprint. The application offers the following features:
 
