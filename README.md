@@ -1,6 +1,6 @@
 # Carbon Footprint Calculator-CO2 Ninja 
 
-##Live-https://co-2-footprint-tracker.vercel.app/
+## Live- https://co-2-footprint-tracker.vercel.app/
 
 ## Overview
 This project is a Carbon Footprint Calculator web application designed to help users calculate and track their carbon footprint. The application offers the following features:
